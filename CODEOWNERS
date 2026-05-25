@@ -1,0 +1,5 @@
+# Default: humans approve all changes
+* @bobisme
+
+# Individual twin maintainers can be added:
+# twins/stripe/ @stripe-maintainer

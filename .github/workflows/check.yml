@@ -1,0 +1,51 @@
+name: Conformance Check
+
+on:
+  pull_request:
+    paths:
+      - 'twins/**'
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        twin: [stripe]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install wraith
+        run: |
+          gh release download --repo bobisme/wraith-releases --pattern '*x86_64-unknown-linux-gnu*' --dir /tmp --skip-existing
+          tar xzf /tmp/wraith-*-x86_64-unknown-linux-gnu.tar.gz -C /usr/local/bin/
+          wraith --version
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Run conformance check
+        run: |
+          wraith check --twin twins/${{ matrix.twin }} --in-memory --format json | tee /tmp/check-result.json
+          exit_code=${PIPESTATUS[0]}
+          if [ $exit_code -eq 2 ]; then
+            echo "::error::Conformance check failed for ${{ matrix.twin }}"
+            exit 1
+          elif [ $exit_code -ne 0 ]; then
+            echo "::error::wraith check exited with code $exit_code"
+            exit $exit_code
+          fi
+
+      - name: Run doctor
+        run: wraith doctor --twin twins/${{ matrix.twin }}
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: check-${{ matrix.twin }}
+          path: /tmp/check-result.json
+          retention-days: 30

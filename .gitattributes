@@ -1,0 +1,3 @@
+*.wrec.zst binary
+*.wir.json linguist-generated=true
+symbols.json linguist-generated=true
