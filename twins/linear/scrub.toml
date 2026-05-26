@@ -19,11 +19,6 @@ match = "x-api-key"
 action = "tokenize"
 
 [[rules]]
-scope = "header"
-match = "stripe-signature"
-action = "tokenize"
-
-[[rules]]
 scope = "query_param"
 match = "api_key"
 action = "tokenize"
@@ -58,29 +53,14 @@ scope = "query_param"
 match = "client_secret"
 action = "tokenize"
 
-# Stripe API key formats: sk_test_*, sk_live_*, pk_*, rk_*, whsec_*
+# Linear API key format: lin_api_*
 [[rules]]
 scope = "regex"
-match = 'sk_(test|live)_[0-9a-zA-Z]{20,}'
+match = 'lin_api_[0-9a-zA-Z]+'
 action = "tokenize"
 
+# Linear OAuth tokens
 [[rules]]
 scope = "regex"
-match = 'pk_(test|live)_[0-9a-zA-Z]{20,}'
+match = 'lin_oauth_[0-9a-zA-Z]+'
 action = "tokenize"
-
-[[rules]]
-scope = "regex"
-match = 'rk_(test|live)_[0-9a-zA-Z]{20,}'
-action = "tokenize"
-
-[[rules]]
-scope = "regex"
-match = 'whsec_[0-9a-zA-Z]+'
-action = "tokenize"
-
-# Credit card numbers
-[[rules]]
-scope = "regex"
-match = '\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b'
-action = "redact"

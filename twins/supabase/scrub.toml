@@ -18,9 +18,10 @@ scope = "header"
 match = "x-api-key"
 action = "tokenize"
 
+# Supabase passes its API key in the apikey header
 [[rules]]
 scope = "header"
-match = "stripe-signature"
+match = "apikey"
 action = "tokenize"
 
 [[rules]]
@@ -58,29 +59,21 @@ scope = "query_param"
 match = "client_secret"
 action = "tokenize"
 
-# Stripe API key formats: sk_test_*, sk_live_*, pk_*, rk_*, whsec_*
+# Supabase local service keys: sb_secret_* and sb_publishable_*
 [[rules]]
 scope = "regex"
-match = 'sk_(test|live)_[0-9a-zA-Z]{20,}'
+match = 'sb_(secret|publishable)_[0-9a-zA-Z_\-]+'
 action = "tokenize"
 
+# Supabase cloud personal access tokens: sbp_*
 [[rules]]
 scope = "regex"
-match = 'pk_(test|live)_[0-9a-zA-Z]{20,}'
+match = 'sbp_[0-9a-zA-Z]+'
 action = "tokenize"
 
+# JWT tokens (Supabase anon and service role keys are long-lived JWTs)
+# Pattern: three base64url segments separated by dots, min 100 chars total
 [[rules]]
 scope = "regex"
-match = 'rk_(test|live)_[0-9a-zA-Z]{20,}'
+match = 'eyJ[0-9a-zA-Z\-_]{20,}\.[0-9a-zA-Z\-_]{20,}\.[0-9a-zA-Z\-_]{20,}'
 action = "tokenize"
-
-[[rules]]
-scope = "regex"
-match = 'whsec_[0-9a-zA-Z]+'
-action = "tokenize"
-
-# Credit card numbers
-[[rules]]
-scope = "regex"
-match = '\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b'
-action = "redact"

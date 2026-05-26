@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        twin: [stripe]
+        twin: [stripe, github, linear, cloudflare, supabase]
     steps:
       - uses: actions/checkout@v4
 
@@ -27,7 +27,19 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
 
+      - name: Check for recordings
+        id: has_recordings
+        run: |
+          if [ -d "twins/${{ matrix.twin }}/recordings/sessions" ] && \
+             [ "$(ls -A twins/${{ matrix.twin }}/recordings/sessions 2>/dev/null)" ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "No recordings found for ${{ matrix.twin }} — skipping conformance check"
+          fi
+
       - name: Run conformance check
+        if: steps.has_recordings.outputs.present == 'true'
         run: |
           wraith check --twin twins/${{ matrix.twin }} --in-memory --format json | tee /tmp/check-result.json
           exit_code=${PIPESTATUS[0]}
@@ -43,7 +55,7 @@ jobs:
         run: wraith doctor --twin twins/${{ matrix.twin }}
 
       - name: Upload results
-        if: always()
+        if: always() && steps.has_recordings.outputs.present == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: check-${{ matrix.twin }}

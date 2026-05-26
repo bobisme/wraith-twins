@@ -18,9 +18,15 @@ scope = "header"
 match = "x-api-key"
 action = "tokenize"
 
+# Cloudflare Global API Key authentication headers
 [[rules]]
 scope = "header"
-match = "stripe-signature"
+match = "x-auth-key"
+action = "tokenize"
+
+[[rules]]
+scope = "header"
+match = "x-auth-email"
 action = "tokenize"
 
 [[rules]]
@@ -58,29 +64,3 @@ scope = "query_param"
 match = "client_secret"
 action = "tokenize"
 
-# Stripe API key formats: sk_test_*, sk_live_*, pk_*, rk_*, whsec_*
-[[rules]]
-scope = "regex"
-match = 'sk_(test|live)_[0-9a-zA-Z]{20,}'
-action = "tokenize"
-
-[[rules]]
-scope = "regex"
-match = 'pk_(test|live)_[0-9a-zA-Z]{20,}'
-action = "tokenize"
-
-[[rules]]
-scope = "regex"
-match = 'rk_(test|live)_[0-9a-zA-Z]{20,}'
-action = "tokenize"
-
-[[rules]]
-scope = "regex"
-match = 'whsec_[0-9a-zA-Z]+'
-action = "tokenize"
-
-# Credit card numbers
-[[rules]]
-scope = "regex"
-match = '\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b'
-action = "redact"

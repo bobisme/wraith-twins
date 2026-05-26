@@ -1,0 +1,7 @@
+# Known accepted drifts for Supabase twin.
+#
+# Each [[accept]] entry suppresses a specific conformance divergence
+# that has been reviewed and determined to be expected behavior.
+# Format matches wraith.toml [[diff.suppress]] syntax.
+
+# No accepted drifts yet.

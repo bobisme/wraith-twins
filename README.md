@@ -25,6 +25,12 @@ wraith serve --twin twins/stripe --fidelity synth
 | Twin | API | Sessions | Exchanges | Status |
 |------|-----|----------|-----------|--------|
 | [stripe](twins/stripe/) | Stripe API | 3 | 1,190 | Conformant |
+| [github](twins/github/) | GitHub REST API v3 | — | — | Seeding |
+| [linear](twins/linear/) | Linear GraphQL API | — | — | Seeding |
+| [cloudflare](twins/cloudflare/) | Cloudflare API v4 | — | — | Seeding |
+| [supabase](twins/supabase/) | Supabase / PostgREST | — | — | Seeding |
+
+Twins marked **Seeding** have config scaffolding but no recordings yet. They receive recordings on the next nightly run.
 
 ## Twin structure
 
